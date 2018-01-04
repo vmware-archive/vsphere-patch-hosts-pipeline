@@ -1,0 +1,17 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: czero/cflinuxfs2
+inputs:
+  - name: vsphere-patch-hosts-pipeline
+params:
+  GOVC_INSECURE:
+  GOVC_URL:
+  GOVC_USERNAME:
+  GOVC_PASSWORD:
+
+run:
+  path: vsphere-patch-hosts-pipeline/tasks/patch/task.sh
