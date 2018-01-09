@@ -65,6 +65,10 @@ while read host; do
       echo "Rebooting $GOVC_HOST"
       govc host.shutdown -r "$GOVC_HOST"
 
+      #wait for the reboot
+      echo "Sleeping for 5 minutes while host reboots"
+      sleep 5m
+
       #exit maintenance mode
       echo "Removing $GOVC_HOST from maintenance mode"
       govc host.maintenance.exit "$GOVC_HOST"
