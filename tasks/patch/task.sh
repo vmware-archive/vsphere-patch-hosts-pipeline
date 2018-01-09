@@ -71,7 +71,16 @@ while read host; do
 
       #exit maintenance mode
       echo "Removing $GOVC_HOST from maintenance mode"
-      govc host.maintenance.exit "$GOVC_HOST"
+      output=$(govc host.maintenance.exit "$GOVC_HOST" | grep OK)
+
+      while [ -z "$output" ]
+      do
+        echo "Sleeping for 2 more minutes while host reboots"
+        sleep 2m
+        output=$(govc host.maintenance.exit "$GOVC_HOST" | grep OK)
+      done
+
+      echo "Host $GOVC_HOST successfully patched"
     else
       echo "$GOVC_HOST already patched to latest version"
     fi
