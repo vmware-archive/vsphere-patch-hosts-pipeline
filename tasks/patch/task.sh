@@ -1,11 +1,5 @@
 #!/bin/bash
 
-#export variables for GOVC
-# export GOVC_URL=10.193.134.35
-# export GOVC_USERNAME=administrator@vsphere65.local
-# export GOVC_PASSWORD=NTJY1sPDXKKu!
-# export GOVC_INSECURE=true
-
 #find all hosts
 echo "Finding all hosts..."
 govc find . -type h | sed 's/.*\///' > hosts.txt
