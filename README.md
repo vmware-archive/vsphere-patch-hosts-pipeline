@@ -10,6 +10,8 @@
 
 ## Fly the pipeline
 
-`fly -t <name> login -c <concourse url>` - Login to your Concourse instance
+### Login to your Concourse instance
+`fly -t <name> login -c <concourse url>`
 
-`fly -t <name> set-pipeline -p <pipeline name> -c pipeline.yml --load-vars-from params.yml` - Upload the pipeline to Concourse
+### Upload the pipeline to Concourse
+`fly -t <name> set-pipeline -p <pipeline name> -c pipeline.yml --load-vars-from params.yml`
