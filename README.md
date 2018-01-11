@@ -12,6 +12,7 @@ The purpose of this pipeline is to automate the patching of vSphere ESXi Hosts. 
 * `vcenter_username` - Username for vCenter defined by `vcenter_url`
 * `vcenter_password` - Password for `vcenter_username`
 * `vcenter_insecure` - True or False value indicating whether or not to ignore the SSL Certificate errors
+* `build_number` - Optional (Latest will be used if not provided) https://esxi-patches.v-front.de used as reference.
 
 ## Fly the pipeline
 
