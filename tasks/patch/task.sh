@@ -27,15 +27,33 @@ while read host; do
     | sed -e $'s/is the GA release of//g' \
     > builds.txt
 
-    #find newest patch info
-    latest=$(head -n 1 builds.txt)
 
-    #split latest into array containing build name in fields[0] and build number in fields[1]
-    IFS=',' read -ra fields <<< "$latest"
-    echo "Latest patch for ESXi-$version is ${fields[0]} with build number ${fields[1]}"
+    if [ -z $BUILD_NUMBER ]
+    then
+      #grab latest build
+      build_to_use=$(head -n 1 builds.txt)
+      echo "Latest patch for ESXi-$version is ${fields[0]} with build number ${fields[1]}"
+    else
+      while read build; do
+        IFS=',' read -ra fields <<< "$build"
+        if [ "$BUILD_NUMBER" -eq "${fields[1]}" ]
+        then
+          build_to_use=$build
+        fi
+      done < builds.txt
+
+      if [ -z $build_to_use ]
+      then
+        echo "Build number $BUILD_NUMBER is not valid"
+        exit 1
+      fi
+    fi
+
+    #parse build info
+    IFS=',' read -ra fields <<< "$build_to_use"
 
     #check whether the host needs to be patched
-    if [ "$build" -ne "${fields[1]}" ]
+    if [ $build -lt ${fields[1]} ]
     then
       #enter maintenance mode
       echo "Putting $GOVC_HOST into maintenance mode"
@@ -60,6 +78,7 @@ while read host; do
       govc host.shutdown -r "$GOVC_HOST"
 
       #wait for the reboot
+      #Should this be configurable?
       echo "Sleeping for 5 minutes while host reboots"
       sleep 5m
 
@@ -76,7 +95,7 @@ while read host; do
 
       echo "Host $GOVC_HOST successfully patched"
     else
-      echo "$GOVC_HOST already patched to latest version"
+      echo "$GOVC_HOST already patched"
     fi
 
 done < hosts.txt

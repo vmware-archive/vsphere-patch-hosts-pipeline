@@ -2,3 +2,4 @@ vcenter_url:  #IP Address or DNS for vCenter
 vcenter_username:  #username for vCenter
 vcenter_password:  #password for vCenter
 vcenter_insecure:  #true or false value indicating whether or not to ignore the SSL Cert
+build_number:  #Optional (Latest will be used if not provided) https://esxi-patches.v-front.de used as reference.

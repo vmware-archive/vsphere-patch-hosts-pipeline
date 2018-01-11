@@ -3,11 +3,20 @@ resources:
   type: git
   source:
     uri: https://github.com/pivotal-cf/vsphere-patch-hosts-pipeline
-    branch: master
+    branch: build_num_param
+- name: after-2AM
+  type: time
+  source:
+    start: 2:00 AM
+    stop: 3:00 AM
+    days: [Sunday]
+    location: America/Chicago
 
 jobs:
 - name: patch-hosts
   plan:
+  - get: after-2AM
+    trigger: true
   - get: vsphere-patch-hosts-pipeline
   - task: patch
     file: vsphere-patch-hosts-pipeline/tasks/patch/task.yml
@@ -16,3 +25,4 @@ jobs:
       GOVC_USERNAME: {{vcenter_username}}
       GOVC_PASSWORD: {{vcenter_password}}
       GOVC_INSECURE: {{vcenter_insecure}}
+      BUILD_NUMBER: {{build_number}}
