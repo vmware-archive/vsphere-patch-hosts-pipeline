@@ -1,0 +1,18 @@
+resources:
+- name: vsphere-patch-hosts-pipeline
+  type: git
+  source:
+    uri: https://github.com/pivotal-cf/vsphere-patch-hosts-pipeline
+    branch: master
+
+jobs:
+- name: patch-hosts
+  plan:
+  - get: vsphere-patch-hosts-pipeline
+  - task: patch
+    file: vsphere-patch-hosts-pipeline/tasks/patch/task.yml
+    params:
+      GOVC_URL: {{vcenter_url}}
+      GOVC_USERNAME: {{vcenter_username}}
+      GOVC_PASSWORD: {{vcenter_password}}
+      GOVC_INSECURE: {{vcenter_insecure}}
