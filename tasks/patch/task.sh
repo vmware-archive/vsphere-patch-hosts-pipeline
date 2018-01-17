@@ -62,6 +62,8 @@ while read host; do
 
     #parse build info
     IFS=',' read -ra fields <<< "$build_to_use"
+    
+    echo ${fields[1]}
 
     #check whether the host needs to be patched
     if [ $build -lt ${fields[1]} ]
