@@ -3,7 +3,7 @@ resources:
   type: git
   source:
     uri: https://github.com/pivotal-cf/vsphere-patch-hosts-pipeline
-    branch: build_num_param
+    branch: master
 - name: after-2AM
   type: time
   source:
