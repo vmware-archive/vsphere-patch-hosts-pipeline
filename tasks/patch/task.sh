@@ -10,6 +10,9 @@ else
   govc find $(govc find . -type c -name $CLUSTER_NAME) -type h | sed 's/.*\///' > hosts.txt
 fi
 
+echo "Hosts to be patched are"
+cat hosts.txt
+
 while read host; do
   export GOVC_HOST=$host
 
