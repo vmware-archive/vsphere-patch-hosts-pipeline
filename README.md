@@ -1,5 +1,5 @@
 # vsphere-patch-hosts-pipeline
-The purpose of this pipeline is to automate the patching of vSphere ESXi Hosts.  It utilizes govc to execute commands remotely against all hosts in a given vCenter instance.  The hosts will be patched one at a time until all hosts have been patched.
+The purpose of this pipeline is to automate the patching of vSphere ESXi Hosts.  It utilizes govc to execute commands remotely against all hosts in a given vCenter instance or optionally in a single cluster.  The hosts will be patched one at a time until all hosts have been patched.
 
 ## Prerequisites
 * You need to have Concourse CI running with a worker that has access to the vCenter instance containing the hosts to be patched.
@@ -13,6 +13,7 @@ The purpose of this pipeline is to automate the patching of vSphere ESXi Hosts. 
 * `vcenter_password` - Password for `vcenter_username`
 * `vcenter_insecure` - True or False value indicating whether or not to ignore the SSL Certificate errors
 * `build_number` - Optional (Latest will be used if not provided) https://esxi-patches.v-front.de used as reference.
+* `cluster_name` - Optional (All will be patched if not passed) Cluster to patch hosts in.
 
 ## Fly the pipeline
 
