@@ -13,6 +13,7 @@ params:
   GOVC_USERNAME:
   GOVC_PASSWORD:
   BUILD_NUMBER:
+  CLUSTER_NAME:
 
 run:
   path: vsphere-patch-hosts-pipeline/tasks/patch/task.sh

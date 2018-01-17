@@ -26,3 +26,4 @@ jobs:
       GOVC_PASSWORD: {{vcenter_password}}
       GOVC_INSECURE: {{vcenter_insecure}}
       BUILD_NUMBER: {{build_number}}
+      CLUSTER_NAME: {{cluster_name}}

@@ -2,7 +2,13 @@
 
 #find all hosts
 echo "Finding all hosts..."
-govc find . -type h | sed 's/.*\///' > hosts.txt
+
+if [ -z $CLUSTER_NAME ]
+then
+  govc find . -type h | sed 's/.*\///' > hosts.txt
+else
+  govc find $(govc find . -type c -name $CLUSTER_NAME) -type h | sed 's/.*\///' > hosts.txt
+fi
 
 while read host; do
   export GOVC_HOST=$host
