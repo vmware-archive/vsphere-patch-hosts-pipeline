@@ -40,8 +40,8 @@ while read host; do
     if [ -z $BUILD_NUMBER ]
     then
       #grab latest build
+      echo "Finding latest patch..."
       build_to_use=$(head -n 1 builds.txt)
-      echo "Latest patch for ESXi-$version is ${fields[0]} with build number ${fields[1]}"
     else
       while read build_line; do
         IFS=',' read -ra fields <<< "$build_line"
