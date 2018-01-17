@@ -58,6 +58,8 @@ while read host; do
       fi
     fi
 
+    echo "Using build $build_to_use"
+
     #parse build info
     IFS=',' read -ra fields <<< "$build_to_use"
 
