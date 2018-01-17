@@ -62,13 +62,12 @@ while read host; do
 
     #parse build info
     IFS=',' read -ra fields <<< "$build_to_use"
-    
-    echo ${fields[1]}
-    echo $build
+
 
     #check whether the host needs to be patched
     if [ $build -lt ${fields[1]} ]
     then
+      echo "Starting to patch $GOVC_HOST from $build to ${fields[1]}"
       #enter maintenance mode
       echo "Putting $GOVC_HOST into maintenance mode"
       govc host.maintenance.enter "$GOVC_HOST"
