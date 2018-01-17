@@ -101,6 +101,12 @@ while read host; do
 
       while [ -z "$output" ]
       do
+        in_maintenance=$(govc host.info -json | jq -r '.HostSystems[0].Summary.Runtime.InMaintenanceMode')
+        if [ $in_maintenance == false ]
+        then
+          break
+        fi
+        
         echo "Sleeping for 2 more minutes while host reboots"
         sleep 2m
         output=$(govc host.maintenance.exit "$GOVC_HOST" | grep OK)
