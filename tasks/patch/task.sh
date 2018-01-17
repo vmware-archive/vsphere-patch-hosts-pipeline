@@ -97,20 +97,23 @@ while read host; do
 
       #exit maintenance mode
       echo "Removing $GOVC_HOST from maintenance mode"
-      output=$(govc host.maintenance.exit "$GOVC_HOST" | grep OK)
+      output=$(govc host.maintenance.exit "$GOVC_HOST" | grep "An error occurred while communicating with the remote host.")
 
-      while [ -z "$output" ]
+      #While the output shows that the host is still rebooting, keep trying to bring it out of maintenance mode
+      while [ -n "$output" ]
       do
-        in_maintenance=$(govc host.info -json | jq -r '.HostSystems[0].Summary.Runtime.InMaintenanceMode')
-        if [ $in_maintenance == false ]
-        then
-          break
-        fi
-        
         echo "Sleeping for 2 more minutes while host reboots"
         sleep 2m
-        output=$(govc host.maintenance.exit "$GOVC_HOST" | grep OK)
+        output=$(govc host.maintenance.exit "$GOVC_HOST" | grep "An error occurred while communicating with the remote host.")
       done
+
+      #verify that it successfully came out of maintenance mode, if not exit for manual intervention
+      in_maintenance=$(govc host.info -json | jq -r '.HostSystems[0].Summary.Runtime.InMaintenanceMode')
+      if [ $in_maintenance == true ]
+      then
+        echo "$GOVC_HOST is not coming out of maintenance mode"
+        exit 1
+      fi
 
       echo "Host $GOVC_HOST successfully patched"
     else
