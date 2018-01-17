@@ -40,14 +40,14 @@ while read host; do
     if [ -z $BUILD_NUMBER ]
     then
       #grab latest build
+      echo "Finding latest patch..."
       build_to_use=$(head -n 1 builds.txt)
-      echo "Latest patch for ESXi-$version is ${fields[0]} with build number ${fields[1]}"
     else
-      while read build; do
-        IFS=',' read -ra fields <<< "$build"
+      while read build_line; do
+        IFS=',' read -ra fields <<< "$build_line"
         if [ "$BUILD_NUMBER" -eq "${fields[1]}" ]
         then
-          build_to_use=$build
+          build_to_use=$build_line
         fi
       done < builds.txt
 
@@ -58,12 +58,16 @@ while read host; do
       fi
     fi
 
+    echo "Using build $build_to_use"
+
     #parse build info
     IFS=',' read -ra fields <<< "$build_to_use"
+
 
     #check whether the host needs to be patched
     if [ $build -lt ${fields[1]} ]
     then
+      echo "Starting to patch $GOVC_HOST from $build to ${fields[1]}"
       #enter maintenance mode
       echo "Putting $GOVC_HOST into maintenance mode"
       govc host.maintenance.enter "$GOVC_HOST"
@@ -93,14 +97,23 @@ while read host; do
 
       #exit maintenance mode
       echo "Removing $GOVC_HOST from maintenance mode"
-      output=$(govc host.maintenance.exit "$GOVC_HOST" | grep OK)
+      output=$(govc host.maintenance.exit "$GOVC_HOST" | grep "An error occurred while communicating with the remote host.")
 
-      while [ -z "$output" ]
+      #While the output shows that the host is still rebooting, keep trying to bring it out of maintenance mode
+      while [ -n "$output" ]
       do
         echo "Sleeping for 2 more minutes while host reboots"
         sleep 2m
-        output=$(govc host.maintenance.exit "$GOVC_HOST" | grep OK)
+        output=$(govc host.maintenance.exit "$GOVC_HOST" | grep "An error occurred while communicating with the remote host.")
       done
+
+      #verify that it successfully came out of maintenance mode, if not exit for manual intervention
+      in_maintenance=$(govc host.info -json | jq -r '.HostSystems[0].Summary.Runtime.InMaintenanceMode')
+      if [ $in_maintenance == true ]
+      then
+        echo "$GOVC_HOST is not coming out of maintenance mode"
+        exit 1
+      fi
 
       echo "Host $GOVC_HOST successfully patched"
     else
