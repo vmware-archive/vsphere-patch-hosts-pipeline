@@ -5,9 +5,9 @@ echo "Finding all hosts..."
 
 if [ -z $CLUSTER_NAME ]
 then
-  govc find . -type h | sed 's/.*\///' > hosts.txt
+  govc find . -type h > hosts.txt
 else
-  govc find $(govc find . -type c -name $CLUSTER_NAME) -type h | sed 's/.*\///' > hosts.txt
+  govc find $(govc find . -type c -name $CLUSTER_NAME) -type h > hosts.txt
 fi
 
 echo "Hosts to be patched are"
